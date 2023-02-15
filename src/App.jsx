@@ -1,38 +1,63 @@
 import React from 'react'
 import './App.css'
+import Settings from "./components/Settings"
 
 function App() {
-  const [breakLength, setBreakLength] = React.useState(5)
-  const [sessionLength, setSessionLength] = React.useState(25)
+  const [breakLength, setBreakLength] = React.useState(5*60)
+  const [sessionLength, setSessionLength] = React.useState(25*60)
+  const [watch, setWatch] = React.useState(false)
+  const [countInterval, setCountInterval] = React.useState()
+  const [display, setDisplay] = React.useState()
+  const [session, setSession] = React.useState(true)
 
   const editBreak = (signal) => {
-    if (signal) {
-      setBreakLength(old => old + 1)
-    } else {
-      setBreakLength(old => old - 1)
+    if (breakLength > 0 && breakLength < 3601) {
+      if (signal) {
+        setBreakLength(old => old + 60)
+      } else {
+        setBreakLength(old => old - 60)
+      }
     }
   }
 
   const editSession = (signal) => {
-    if (signal) {
-      setSessionLength(old => old + 1) 
-    } else {
-      setSessionLength(old => old - 1)
+    if (sessionLength > 0 && sessionLength < 3601) {
+      if (signal) {
+        setSessionLength(old => old + 60) 
+      } else {
+        setSessionLength(old => old - 60)
+      }
     }
   }
 
-  function Settings(props) {
-    return (
-      <div className="bg-slate-700 p-2 rounded-lg w-64" id="break-settings">
-        <h3>{props.name}</h3>
-        <div className="flex justify-center gap-3 items-center bg-slate-600 rounded-lg py-2 my-2 mx-auto w-9/12">
-          <i onClick={() => props.clickHandler(false)} className="fa-solid fa-minus p-2 cursor-pointer"></i>
-          <p>{props.length}</p>
-          <i onClick={() => props.clickHandler(true)} className="fa-solid fa-plus p-2 cursor-pointer"></i>
-        </div>
-      </div>
-    )
+  const startCountdown = () => {
+    setCountInterval(setInterval( () => setDisplay(old=>old-1), 1000))
+    setWatch(true)
   }
+
+  const stopCountdown = () => {
+    clearInterval(countInterval)
+    setWatch(false)
+  }
+  
+  React.useEffect( () => {
+    if (session && !watch) {
+      setDisplay(sessionLength)
+    }
+  }, [sessionLength])
+
+  React.useEffect( () => {
+    if (display <= 0) {
+      if (session) {
+        setDisplay(breakLength)
+        setSession(false)
+      } else {
+        setDisplay(sessionLength)
+        setSession(true)
+      }
+    }
+  }, [display])
+
 
   return (
     <div className="md:text-3xl text-2xl text-center w-11/12 md:w-10/12 max-w-2xl bg-slate-800 rounded-lg font-mono text-white p-2">
@@ -46,11 +71,11 @@ function App() {
           Session
         </h3>
         <h1>
-          {sessionLength + ":00"}
+          {Math.floor(display / 60) + ":" + (display % 60)}
         </h1>
       </div>
       <div id="buttons-container">
-        <i className="fa-solid fa-play"></i>
+        {!watch ? <i onClick={() => startCountdown()} className="fa-solid fa-play"></i> : <i onClick={() => stopCountdown()} className="fa-solid fa-stop"></i>}
       </div>
     </div>
   )

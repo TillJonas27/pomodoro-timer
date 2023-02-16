@@ -83,25 +83,27 @@ function App() {
   }
 
   return (
-    <div className="md:text-3xl text-2xl text-center w-11/12 md:w-10/12 max-w-2xl bg-slate-800 rounded-lg font-mono text-white p-2">
-      <h1 className="m-4"> Pomodoro-Timer </h1>
-      <div className="flex justify-center gap-4 m-6"id="length-container">
-        <Settings updateValue={setBreakLength} name="Break Length" length={breakLength} clickHandler={editBreak}/>
-        <Settings updateValue={setSessionLength} name="Session Length" length={sessionLength} clickHandler={editSession}/>
+      <div className="md:text-3xl text-2xl text-center w-11/12 md:w-10/12 max-w-2xl bg-slate-800 rounded-lg font-mono text-white p-2">
+        <a href="https://webfabrik.substack.com/p/javascript-calculator" target="_blank"><i className="fa-solid fa-info text-[2.5rem]  text-white m-2mr-2"></i></a>
+        <a target="_blank" href="https://github.com/TillJonas27/" ><i className="fa-brands fa-github text-[2.5rem] text-white m-2 ml-5"></i></a>
+        <h1 className="m-4"> Pomodoro-Timer </h1>
+        <div className="flex justify-center items-center flex-col md:flex-row gap-4 m-6"id="length-container">
+          <Settings updateValue={setBreakLength} name="Break Length" length={breakLength} clickHandler={editBreak}/>
+          <Settings updateValue={setSessionLength} name="Session Length" length={sessionLength} clickHandler={editSession}/>
+        </div>
+        <div id="stopwatch">
+          <h3>
+            Session
+          </h3>
+          <h1>
+            {minutes() + ":" + seconds() }
+          </h1>
+        </div>
+        <div className="flex gap-3 justify-center m-3 text-3xl" id="buttons-container">
+          {!watch ? <i onClick={() => startCountdown()} className="fa-solid fa-play"></i> : <i onClick={() => stopCountdown()} className="fa-solid fa-stop"></i>}
+          <i onClick={reset} className="fa-solid fa-rotate-left"></i>
+        </div>
       </div>
-      <div id="stopwatch">
-        <h3>
-          Session
-        </h3>
-        <h1>
-          {minutes() + ":" + seconds() }
-        </h1>
-      </div>
-      <div className="flex gap-3 justify-center m-3 text-3xl" id="buttons-container">
-        {!watch ? <i onClick={() => startCountdown()} className="fa-solid fa-play"></i> : <i onClick={() => stopCountdown()} className="fa-solid fa-stop"></i>}
-        <i onClick={reset} className="fa-solid fa-rotate-left"></i>
-      </div>
-    </div>
   )
 }
 
